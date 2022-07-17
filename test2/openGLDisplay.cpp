@@ -121,8 +121,8 @@ void openGLDisplay::initializeGL()
     CLogger::getInstance()->outMsg(0, CLogger::level::INFO, "  successfully initialized OpenGLFunctions, function pointer is: 0x%08p\n", m_pFncts);
     
     m_program = new QOpenGLShaderProgram();
-    m_program->addShaderFromSourceCode(QOpenGLShader::Vertex, glslVertex);
-    m_program->addShaderFromSourceCode(QOpenGLShader::Fragment, glslFragment);
+    m_program->addShaderFromSourceFile(QOpenGLShader::Vertex, "vertex.glsl");
+    m_program->addShaderFromSourceCode(QOpenGLShader::Fragment, "fragment.glsl");
     m_program->bindAttributeLocation("vertex", 0);
     m_program->bindAttributeLocation("normal",1);
     m_program->link();
