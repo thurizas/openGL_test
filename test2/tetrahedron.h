@@ -47,6 +47,7 @@ private:
 
 };
 
+
 class tetrahedron
 {
 public:
@@ -55,7 +56,10 @@ public:
 
   const float* constData() const;
   const float* constNorms() const;
+  const uint32_t* indicies() const;
 
+  uint32_t cntVerticies() { return m_cntVerticies; }
+  uint32_t cntIndices() { return m_cntIndicies; }
 
 private:
   void        calcNormals();
@@ -64,8 +68,10 @@ private:
   point3f     m_v2;
   point3f     m_v3;
   point3f     m_v4;
-  int         m_ndx[12];                // vertex index for the four faces
+  uint32_t    m_ndx[12];                // vertex index for the four faces
   float       m_data[12];               // vertex values for the four verticies
+  uint32_t    m_cntIndicies;
+  uint32_t    m_cntVerticies;           // number of verticies in the figure
   float       m_normal[12];             // outward facing normals for the four faces
   QColor      m_color;
 };

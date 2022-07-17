@@ -73,10 +73,9 @@ private:
 
   QOpenGLVertexArrayObject m_vao;
   QOpenGLBuffer            m_vbo;
+  QOpenGLBuffer            m_ibo;            // index buffer object
   QOpenGLShaderProgram*    m_program;
   QOpenGLShader*           m_shader;
-  QVector<GLfloat>         m_vertex;
-  //QOpenGLTexture*          m_texture;
 
   tetrahedron              m_tetra;
 };

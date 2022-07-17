@@ -6,20 +6,33 @@
 #include <iostream>
 
 #include "mainWnd.h"
+#include "logger.h"
 
 
 void allocConsole();
 
+void cmdOut(char* msg)
+{
+  std::cout << msg << std::endl;
+}
+
 int main(int argc, char** argv)
 {
+  uint32_t  dbgLevel = 1;
 
   QApplication app(argc, argv);
 
+  CLogger* pLogger = CLogger::getInstance();
+  pLogger->setLevel(dbgLevel);
+  pLogger->regOutDevice(0, cmdOut);
+  
   allocConsole();
 
   mainWnd    mWindow;
   mWindow.show();
-  return app.exec();
+  int ret = app.exec();
+
+  return ret;
 }
 
 

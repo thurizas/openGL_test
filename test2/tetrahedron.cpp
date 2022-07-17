@@ -11,19 +11,20 @@
  *             v3 = (sqrt(8/9), 0, -1/3)
  *             v4 = (-sqrt(2/9), sqrt(2/3), -1/3)
  * 
- *             there are four faces, the f1 is composed of v2, v3, v4 (ccw)
- *                                       f2 is composed of v1, v4, v3 (ccw)
- *                                       f3 is composed of v1, v2, v4 (ccw)
- *                                       f4 is composed of v1, v3, v2 (ccw)
+ *             there are four faces, the f1 is composed of v2, v4, v3 (ccw)
+ *                                       f2 is composed of v1, v3, v4 (ccw)
+ *                                       f3 is composed of v1, v4, v2 (ccw)
+ *                                       f4 is composed of v1, v2, v3 (ccw)
  * 
  *             f_i is opposite v_i in all cases.
+ *             All coordinates must be in the range [-1, 1] or they will not be drawn
  * parameters:
  *
  * returns   :
  *
  * written   : Jul 2022 (GKHuber)
 ************************************************************************************************************************/
-tetrahedron::tetrahedron() : m_data{ 0 }
+tetrahedron::tetrahedron() : m_data{ 0 }, m_cntIndicies(12), m_cntVerticies(4)
 {
   float   r1 = sqrt(8.0f / 9.0f);
   float   r2 = sqrt(2.0f / 9.0f);
@@ -34,10 +35,10 @@ tetrahedron::tetrahedron() : m_data{ 0 }
   m_v3 = point3f(r1, 0.0f, 1.0f / 3.0f);
   m_v4 = point3f(-r2, r3, -1.0f / 3.0f);
 
-  m_ndx[0] = 2; m_ndx[1] = 3; m_ndx[2] = 4;        // verticies for f1
-  m_ndx[3] = 1; m_ndx[4] = 4; m_ndx[5] = 3;        // verticies for f2
-  m_ndx[6] = 1; m_ndx[7] = 2; m_ndx[8] = 4;        // verticies for f3
-  m_ndx[9] = 1; m_ndx[10] = 3; m_ndx[11] = 2;      // verticies for f4
+  m_ndx[0] = 1; m_ndx[1] = 3; m_ndx[2] = 2;        // verticies for f1
+  m_ndx[3] = 0; m_ndx[4] = 2; m_ndx[5] = 3;        // verticies for f2
+  m_ndx[6] = 0; m_ndx[7] = 3; m_ndx[8] = 1;        // verticies for f3
+  m_ndx[9] = 0; m_ndx[10] = 1; m_ndx[11] = 2;      // verticies for f4
 
   calcNormals();
 }
@@ -67,6 +68,12 @@ const float* tetrahedron::constNorms() const
 {
   return m_normal;
 }
+
+const uint32_t* tetrahedron::indicies() const
+{
+  return m_ndx;
+}
+
 
 /************************************************************************************************************************
  * function : calcNormals

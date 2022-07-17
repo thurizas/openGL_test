@@ -1,5 +1,6 @@
 #include "openGLDisplay.h"
-
+#include "logger.h"
+#include "shader.h"
 #include <QMouseEvent>
 
 #include <QOpenGLBuffer>
@@ -43,7 +44,7 @@ static const char* glslFragment=
 
 openGLDisplay::openGLDisplay(QWidget* parent) : QOpenGLWidget(parent), m_pFncts(nullptr), m_lightPos(0), m_projMatrixLoc(0), m_mvMatrixLoc(0), m_normalMatrixLoc(0), m_program(0), m_shader(0)//, m_texture(0)
 {
-  fprintf(stderr, "[openGLDisplay::openGLDisplay]:\n");
+  CLogger::getInstance()->outMsg(0, CLogger::level::INFO, "[openGLDisplay::openGLDisplay]:\n");
 
   m_xRot = m_yRot = m_zRot = 0;
 
@@ -55,24 +56,11 @@ openGLDisplay::openGLDisplay(QWidget* parent) : QOpenGLWidget(parent), m_pFncts(
   fmt.setProfile(QSurfaceFormat::CoreProfile);
   this->setFormat(fmt);   
 
-  // set up our vertex data....
-  m_vertex.push_back(-0.5f);                              // x coordinate of lower left point
-  m_vertex.push_back(-0.5f);
-  m_vertex.push_back(0.0f);
-  m_vertex.push_back(0.5f);                               // x coordinate of lower right point
-  m_vertex.push_back(-0.5f);
-  m_vertex.push_back(0.0f);
-  m_vertex.push_back(0.0f);                               // x coordinate of upper point
-  m_vertex.push_back(0.5f);
-  m_vertex.push_back(0.0f);
-
-  
-
 }
 
 openGLDisplay::~openGLDisplay()
 {
-  fprintf(stderr, "[openGLDisplay::~openGLDisplay]:");
+  CLogger::getInstance()->outMsg(0, CLogger::level::INFO, "[openGLDisplay::~openGLDisplay]:");
   teardownGL();
 }
 
@@ -88,7 +76,7 @@ QSize openGLDisplay::sizeHint() const
 
 void openGLDisplay::setXRotation(int angle)
 {
-  fprintf(stderr, "[openGLDisplay::setXRotation] setting x rotation to %d:\n", angle);
+  CLogger::getInstance()->outMsg(0, CLogger::level::DEBUG, "[openGLDisplay::setXRotation] setting x rotation to %d:\n", angle);
   normalizeAngle(angle);
   if (angle != m_xRot) {
     m_xRot = angle;
@@ -99,7 +87,7 @@ void openGLDisplay::setXRotation(int angle)
 
 void openGLDisplay::setYRotation(int angle)
 {
-  fprintf(stderr, "[openGLDisplay::setYRotation] setting y rotation to %d:\n", angle);
+  CLogger::getInstance()->outMsg(0, CLogger::level::DEBUG, "[openGLDisplay::setYRotation] setting y rotation to %d:\n", angle);
   normalizeAngle(angle);
   if (angle != m_yRot) {
     m_yRot = angle;
@@ -110,7 +98,7 @@ void openGLDisplay::setYRotation(int angle)
 
 void openGLDisplay::setZRotation(int angle)
 {
-  fprintf(stderr, "[openGLDisplay::setZRotation] setting z rotation to %d:\n", angle);
+  CLogger::getInstance()->outMsg(0, CLogger::level::DEBUG, "[openGLDisplay::setZRotation] setting z rotation to %d:\n", angle);
   normalizeAngle(angle);
   if (angle != m_zRot) {
     m_zRot = angle;
@@ -122,7 +110,7 @@ void openGLDisplay::setZRotation(int angle)
 
 void openGLDisplay::initializeGL()
 {
-  fprintf(stderr, "[openGLDisplay::initializeGL]:\n");
+  CLogger::getInstance()->outMsg(0, CLogger::level::INFO, "[openGLDisplay::initializeGL]:\n");
 
   connect(context(), &QOpenGLContext::aboutToBeDestroyed, this, &openGLDisplay::teardownGL);
 
@@ -131,7 +119,7 @@ void openGLDisplay::initializeGL()
   {  
     printContextInfo();
     m_pFncts = QOpenGLContext::currentContext()->versionFunctions <QOpenGLFunctions_3_3_Core>();
-    fprintf(stderr, "  successfully initialized OpenGLFunctions, function pointer is: 0x%08p\n", m_pFncts);
+    CLogger::getInstance()->outMsg(0, CLogger::level::INFO, "  successfully initialized OpenGLFunctions, function pointer is: 0x%08p\n", m_pFncts);
     
     m_program = new QOpenGLShaderProgram();
     m_program->addShaderFromSourceCode(QOpenGLShader::Vertex, glslVertex);
@@ -146,13 +134,21 @@ void openGLDisplay::initializeGL()
     m_normalMatrixLoc = m_program->uniformLocation("normalMatrix");
     m_lightPos = m_program->uniformLocation("lightPos");
 
+    // create the vertex array object
     m_vao.create();
     if (m_vao.isCreated())
       m_vao.bind();
 
+    // create the vertex buffer object
     m_vbo.create();
     m_vbo.bind();
-    m_vbo.allocate(m_vertex.constData(), m_vertex.count() * sizeof(GLfloat));
+    //m_vbo.allocate(m_vertex.constData(), m_vertex.count() * sizeof(GLfloat));
+    m_vbo.allocate(m_tetra.constData(), 3*m_tetra.cntVerticies() * sizeof(GLfloat));
+
+    // create the element buffer object
+    m_ibo.create();
+    m_ibo.bind();
+    m_ibo.allocate(m_tetra.indicies(), m_tetra.cntIndices()*sizeof(GLint));
 
     setupVertexAttribs();
 
@@ -168,7 +164,7 @@ void openGLDisplay::initializeGL()
   }
   else
   {
-    fprintf(stderr, "  failed to initialize OpenGLFunctions \n");
+    CLogger::getInstance()->outMsg(0, CLogger::level::ERR, "  failed to initialize OpenGLFunctions \n");
   }
 
   glClearColor(0.0, 128.0 / 255.0, 0.0f, 0.0f);
@@ -186,7 +182,7 @@ void openGLDisplay::setupVertexAttribs()
 
 void openGLDisplay::resizeGL(int w, int h)
 {
-  fprintf(stderr, "[openGLDisplay::resizeGL]:\n");
+  CLogger::getInstance()->outMsg(0, CLogger::level::INFO, "[openGLDisplay::resizeGL]:\n");
 
   m_proj.setToIdentity();
   m_proj.perspective(45.0f, GLfloat(w) / h, 0.01f, 100.0f);
@@ -195,7 +191,7 @@ void openGLDisplay::resizeGL(int w, int h)
 
 void openGLDisplay::paintGL()
 {
-  fprintf(stderr, "[openGLDisplay::paintGL]:\n");
+  CLogger::getInstance()->outMsg(0, CLogger::level::INFO, "[openGLDisplay::paintGL]:\n");
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_CULL_FACE);
@@ -207,13 +203,21 @@ void openGLDisplay::paintGL()
   m_world.scale(0.5f);
 
   QOpenGLVertexArrayObject::Binder       vaoBinder(&m_vao);   
+  m_ibo.bind();
   m_program->bind();
   m_program->setUniformValue(m_projMatrixLoc, m_proj);
   m_program->setUniformValue(m_mvMatrixLoc, m_camera * m_world);
   QMatrix3x3 normMatrix = m_world.normalMatrix();
   m_program->setUniformValue(m_normalMatrixLoc, normMatrix);
 
-  glDrawArrays(GL_TRIANGLES, 0, 3);                             
+
+  uint32_t* temp = new uint32_t[m_tetra.cntIndices()];
+  m_ibo.read(0, temp, m_tetra.cntIndices() * sizeof(GLint));
+
+  glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, (void*)temp);
+  //glDrawArrays(GL_TRIANGLES, 0, 12);     
+
+  delete[] temp;
 }
 
 
@@ -222,7 +226,7 @@ void openGLDisplay::paintGL()
 
 void openGLDisplay::teardownGL()
 {
-  fprintf(stderr, "[openGLDisplay::teardownGL]:\n");
+  CLogger::getInstance()->outMsg(0, CLogger::level::INFO, "[openGLDisplay::teardownGL]:\n");
 
   if (m_program != nullptr)
   {
@@ -258,7 +262,7 @@ void openGLDisplay::printContextInfo()
   }
 #undef CASE
 
-  fprintf(stderr, "Type: %s\n  Version: %s\n  Profile: %s\n", glType.toStdString().c_str(), glVersion.toStdString().c_str(), glProfile.toStdString().c_str());
+  CLogger::getInstance()->outMsg(0, CLogger::level::INFO, "Type: %s\n  Version: %s\n  Profile: %s\n", glType.toStdString().c_str(), glVersion.toStdString().c_str(), glProfile.toStdString().c_str());
 }
 
 
