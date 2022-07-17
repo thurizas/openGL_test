@@ -1,6 +1,5 @@
 #include "openGLDisplay.h"
 #include "logger.h"
-#include "shader.h"
 #include <QMouseEvent>
 
 #include <QOpenGLBuffer>
