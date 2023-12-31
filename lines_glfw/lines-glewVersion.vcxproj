@@ -28,8 +28,10 @@
     <ClInclude Include="shader.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="fragment.glsl" />
-    <None Include="vertex.glsl" />
+    <None Include="Shaders\coneFragment.glsl" />
+    <None Include="Shaders\coneVertex.glsl" />
+    <None Include="Shaders\lineFragment.glsl" />
+    <None Include="Shaders\lineVertex.glsl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

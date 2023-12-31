@@ -66,16 +66,17 @@ int main(int argc, char** argv)
       theCamera.pos(glm::vec3(3.0f, 3.0f, 3.0f));
 
       // initialize scene here here
-      line line1(glm::vec3(0, 0, 0), glm::vec3(1, 0, 0));
+      line line1(glm::vec3(-1, 0, 0), glm::vec3(1, 0, 0));
       line1.setColor(glm::vec3(1, 0, 0));
 
-      line line2(glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+      line line2(glm::vec3(0, -1, 0), glm::vec3(0, 1, 0));
       line2.setColor(glm::vec3(0, 1, 0));
 
-      line line3(glm::vec3(0, 0, 0), glm::vec3(0, 0, 1));
+      line line3(glm::vec3(0, 0, -1), glm::vec3(0, 0, 1));
       line3.setColor(glm::vec3(0, 0, 1));
 
       cone cone1(5,4,1.0f, 1/sqrt3);
+      cone1.color(glm::vec3(0, 1, 0));
 
       glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 
@@ -106,10 +107,12 @@ int main(int argc, char** argv)
         line1.setMVP(projection * view);
         line2.setMVP(projection * view);
         line3.setMVP(projection * view);
+        cone1.mvp(projection * view);
 
         line1.draw();
         line2.draw();
         line3.draw();
+        cone1.draw();
 
         glUseProgram(0);
 
