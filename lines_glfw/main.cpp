@@ -66,22 +66,37 @@ int main(int argc, char** argv)
       theCamera.pos(glm::vec3(3.0f, 3.0f, 3.0f));
 
       // initialize scene here here
-      line line1(glm::vec3(-1, 0, 0), glm::vec3(1, 0, 0));
+      line line1(glm::vec3(-1, 0, 0), glm::vec3(1, 0, 0));        // x-axis
       line1.setColor(glm::vec3(1, 0, 0));
 
-      line line2(glm::vec3(0, -1, 0), glm::vec3(0, 1, 0));
+      cone cone1(5, 36, 1.0f, 1 / sqrt3);
+      cone1.color(glm::vec3(1, 0, 0));
+      glm::mat4 model1 = glm::scale(glm::mat4(1.0), glm::vec3{ 0.15, 0.05, 0.05 });
+      model1 = glm::rotate(model1, -90 * DEG2RAD, glm::vec3(0, 0, 1));
+      model1 = glm::translate(model1, glm::vec3{ 0, 6.0, 0 });
+
+      line line2(glm::vec3(0, -1, 0), glm::vec3(0, 1, 0));        // y-axis
       line2.setColor(glm::vec3(0, 1, 0));
 
-      line line3(glm::vec3(0, 0, -1), glm::vec3(0, 0, 1));
+      cone cone2(5,36,1.0f, 1/sqrt3);
+      cone2.color(glm::vec3(0, 1, 0));
+      glm::mat4 model2 = glm::scale(glm::mat4(1.0), glm::vec3{ 0.05, 0.15,0.05 });
+      model2 = glm::translate(model2, glm::vec3{ 0, 6.0, 0 });
+
+      line line3(glm::vec3(0, 0, -1), glm::vec3(0, 0, 1));        // z axis
       line3.setColor(glm::vec3(0, 0, 1));
 
-      cone cone1(5,4,1.0f, 1/sqrt3);
-      cone1.color(glm::vec3(0, 1, 0));
+      cone cone3(5, 36, 1.0f, 1 / sqrt3);
+      cone3.color(glm::vec3(0, 0, 1));
+      glm::mat4 model3 = glm::scale(glm::mat4(1.0), glm::vec3{ 0.05, 0.05, 0.15 });
+      model3 = glm::rotate(model3, 90 * DEG2RAD, glm::vec3(1, 0, 0));
+      model3 = glm::translate(model3, glm::vec3{ 0, 6.0, 0 });
+
 
       glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 
       float angle = 0.0f;
-      float rotationalSpeed = 50.0f;
+      float rotationalSpeed = 40.0f;
 
 
       float w = SCR_WIDTH;
@@ -107,12 +122,16 @@ int main(int argc, char** argv)
         line1.setMVP(projection * view);
         line2.setMVP(projection * view);
         line3.setMVP(projection * view);
-        cone1.mvp(projection * view);
+        cone1.mvp(projection * view * model1);
+        cone2.mvp(projection * view * model2);
+        cone3.mvp(projection * view * model3);
 
         line1.draw();
         line2.draw();
         line3.draw();
         cone1.draw();
+        cone2.draw();
+        cone3.draw();
 
         glUseProgram(0);
 
