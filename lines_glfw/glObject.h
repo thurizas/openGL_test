@@ -3,6 +3,13 @@
 
 #include <cstdint>
 
+typedef struct _v
+{
+  float   x;
+  float   y;
+  float   z;
+} vertex, * pvertex;
+
 class glObject
 {
 public:

@@ -18,14 +18,17 @@
     <ClCompile Include="line.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="shader.cpp" />
+    <ClCompile Include="sphere.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h" />
     <ClInclude Include="cone.h" />
+    <ClInclude Include="constants.h" />
     <ClInclude Include="glfwWindow.h" />
     <ClInclude Include="glObject.h" />
     <ClInclude Include="line.h" />
     <ClInclude Include="shader.h" />
+    <ClInclude Include="sphere.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\coneFragment.glsl" />

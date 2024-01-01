@@ -56,11 +56,11 @@ void cone::calcVertices()
       float x = radius * cos(DEG2RAD * angle);
       float z = radius * sin(DEG2RAD * angle);
       //fprintf(stderr, "(%6.3f, %6.3f, %6.3f)\n", x, y, z);
-      m_vertices.push_back(vertice{ x,y,z });
+      m_vertices.push_back(vertex{ x,y,z });
     }
   }
 
-  m_vertices.push_back(vertice{ 0.0f, m_height, 0.0f });     // apex of cone
+  m_vertices.push_back(vertex{ 0.0f, m_height, 0.0f });     // apex of cone
 
   //for(vertice v:m_vertices)
   //  fprintf(stderr, "(%6.3f, %6.3f, %6.3f)\n", v.x, v.y, v.z);
@@ -112,7 +112,7 @@ void cone::calcVertices()
 
   glGenBuffers(1, &m_vbo);
   glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(vertice) * m_vertices.size(), m_vertices.data(), GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(vertex) * m_vertices.size(), m_vertices.data(), GL_STATIC_DRAW);
 
   glGenBuffers(1, &m_ibo);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo);
