@@ -93,9 +93,10 @@ int main(int argc, char** argv)
       model3 = glm::rotate(model3, 90 * DEG2RAD, glm::vec3(1, 0, 0));
       model3 = glm::translate(model3, glm::vec3{ 0, 6.0, 0 });
 
-      sphere sphere1(10, 36, false);
+      sphere sphere1(10, 36, true);
+      //sphere sphere1(6, 12, true);
       sphere1.color(glm::vec3(0.5, 0, 1));
-      glm::mat4 model4 = glm::scale(glm::mat4(1.0), glm::vec3{ 0.3, 0.3, 0.3 });
+      glm::mat4 model4 = glm::scale(glm::mat4(1.0), glm::vec3{ 0.5, 0.5, 0.5 });
 
 
       glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);

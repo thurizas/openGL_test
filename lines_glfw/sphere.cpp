@@ -31,7 +31,52 @@ int sphere::draw()
 
   glBindVertexArray(m_vao);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo);
-  glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0);
+
+  if (m_wireFrame)
+  {
+    std::vector<int>       line;
+    // draw latitudes
+    for (uint32_t row = 1; row < m_cntSlices; row++)
+    {
+      line.clear();
+
+      for (uint32_t ndx = (row - 1) * (m_cntSegments) + 1; ndx <= m_cntSegments*row; ndx++)
+      {
+        line.push_back(m_indices[ndx]);
+      }
+
+      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo);
+      glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(line[0]) * line.size(), line.data(), GL_STATIC_DRAW);
+
+      glDrawElements(GL_LINE_LOOP, line.size(), GL_UNSIGNED_INT, 0);
+
+      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    }
+
+    //draw longitudes
+    for (uint32_t col = 1; col <= m_cntSegments; col++)
+    {
+      line.clear();
+      line.push_back(m_indices[0]);                // push north pole  
+      for (uint32_t ndx = col; ndx < m_indices.size()-1; ndx = ndx + m_cntSegments)
+      {
+        line.push_back(m_indices[ndx]);
+      }
+      line.push_back((int)m_indices.size() - 1);        // push south pole
+
+      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo);
+      glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(line[0]) * line.size(), line.data(), GL_STATIC_DRAW);
+
+      glDrawElements(GL_LINE_STRIP, line.size(), GL_UNSIGNED_INT, 0);
+
+      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    }
+  }
+  else                                    // draw a solid sphere.....
+  {
+    glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0);
+  }
+
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
   glBindVertexArray(0);
 
@@ -131,6 +176,10 @@ void sphere::genSolidBuffers()
 
 void sphere::genWFBuffers()
 {
+  // for a wire-frame representation indices are the order that we created them in.
+  for (uint32_t ndx = 0; ndx < m_vertices.size(); ndx++)
+    m_indices.push_back(ndx);
+
   glGenBuffers(1, &m_ibo);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(m_indices[0]) * m_indices.size(), m_indices.data(), GL_STATIC_DRAW);
