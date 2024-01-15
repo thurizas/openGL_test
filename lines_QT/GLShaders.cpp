@@ -86,7 +86,7 @@ void glslShader::compileShader(const char* vCode, const char* fCode, const char*
     GLint  result = -1;
     GLchar eLog[1024] = { 0 };
 
-    m_fncts->glValidateProgram(m_shaderID);
+    m_fncts->glLinkProgram(m_shaderID);
     m_fncts->glGetProgramiv(m_shaderID, GL_LINK_STATUS, &result);
     if (result)
     {

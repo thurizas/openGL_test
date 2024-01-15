@@ -9,7 +9,10 @@
 #include <QOpenGLFunctions_3_3_Core>
 #include <qdialog.h>
 
-#include <QMatrix4x4>
+//#include <QMatrix4x4>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 
 class QSurfaceFormat;
 
@@ -19,7 +22,7 @@ public:
   GLDisplay(QWidget* parent = nullptr);
   ~GLDisplay();
 
-  Camera* getCamera() { return &m_theCamera; }
+  camera* getCamera() { return m_pCamera; }
 
 protected:
   void initializeGL() override;
@@ -27,10 +30,10 @@ protected:
   void paintGL() override;
 
 private:
-  QMatrix4x4             m_projection;
-  QMatrix4x4             m_view;
-  Camera                 m_theCamera;
-  std::vector<glObject*> m_objects;
+  glm::mat4 /*QMatrix4x4*/ m_projection;
+  glm::mat4 /*QMatrix4x4*/ m_view;
+  camera*                  m_pCamera;
+  std::vector<glObject*>   m_objects;
 };
 
 

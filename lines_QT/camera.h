@@ -1,36 +1,25 @@
 #ifndef _camera_h_
 #define _camera_h_
 
-#include <QMatrix4x4>
-#include <QVector3D>
+//#include <QMatrix4x4>
+//#include <QVector3D>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 #include <QOpenGlFunctions_3_3_core>
 
-class Camera 
+class camera
 {
 public:
-  Camera();
-  Camera(QVector3D pos, QVector3D up, float yaw, float pitch, float moveSpd, float turnSpd);
-  ~Camera();
+  camera();
+  ~camera();
 
-  QMatrix4x4 calcViewMatrix();
+  void pos(glm::vec3 v) { m_pos = v; }
+  glm::vec3 pos() { return m_pos; }
 
 private:
-  QMatrix4x4    m_lookAt;
-
-  QVector3D     m_pos;
-  QVector3D     m_front;
-  QVector3D     m_up;
-  QVector3D     m_right;
-  QVector3D     m_worldUp;
-
-  float         m_yaw;
-  float         m_pitch;
-
-  float         m_moveSpd;
-  float         m_turnSpd;
-
-  void          update();
+  glm::vec3   m_pos;
 };
 
 #endif;

@@ -3,7 +3,8 @@
 
 #include <cstdint>
 
-#include <QMatrix4x4>
+//#include <QMatrix4x4>
+#include <glm/glm.hpp>
 
 typedef struct _v
 {
@@ -21,7 +22,8 @@ public:
   static int getCnt() { return m_cnt++; }
 
   virtual int draw() = 0;
-  virtual void setMVP(QMatrix4x4) = 0;
+  //virtual void setMVP(QMatrix4x4) = 0;
+  virtual void setMVP(glm::mat4) = 0;
 
 protected:
   int m_shader;
